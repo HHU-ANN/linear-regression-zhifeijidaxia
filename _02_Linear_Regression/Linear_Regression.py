@@ -11,15 +11,13 @@ except ImportError as e:
 def ridge(data):
     # 先求出(A^T*A+cI)xhat
     X, Y = read_data()
-    X = X.transpose()
-    add = np.ones(len(Y)).reshape(1, len(Y))
+    add = np.ones(len(Y)).reshape(len(Y), 1)
     # 将X置为增广矩阵
-    X = np.r_[X, add]
-    const = 0.6
+    X = np.c_[X, add]
+    const=0.01
     # 以下为通过最小二乘法得出权重向量w
-    temp = np.matmul(X, X.transpose()) + const * np.identity(7)
-    temp2 = np.linalg.pinv(temp)
-    w = np.matmul(np.matmul(temp2, X), Y)
+    temp = np.linalg.inv(np.matmul(X.T, X)+ const * np.identity(7))
+    w = np.matmul(np.matmul(temp, X.T), Y)
 
     result = 0
     for i in range(len(data)):
@@ -30,15 +28,13 @@ def ridge(data):
 def lasso(data):
     # 先求出(A^T*A+cI)xhat
     X, Y = read_data()
-    X = X.transpose()
-    add = np.ones(len(Y)).reshape(1, len(Y))
+    add = np.ones(len(Y)).reshape(len(Y), 1)
     # 将X置为增广矩阵
-    X = np.r_[X, add]
-    const = 0.6
+    X = np.c_[X, add]
+    const = 0.01
     # 以下为通过最小二乘法得出权重向量w
-    temp = np.matmul(X, X.transpose()) + const * np.identity(7)
-    temp2 = np.linalg.pinv(temp)
-    w = np.matmul(np.matmul(temp2, X), Y)
+    temp = np.linalg.inv(np.matmul(X.T, X) + const * np.identity(7))
+    w = np.matmul(np.matmul(temp, X.T), Y)
 
     result = 0
     for i in range(len(data)):
@@ -52,3 +48,4 @@ def read_data(path='./data/exp02/'):
     x = np.load(path + 'X_train.npy')
     y = np.load(path + 'y_train.npy')
     return x, y
+
